@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  pypi-server:
+    image: pypiserver/pypiserver:v1.5.1
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:8080
+    volumes:
+      - type: bind
+        source: ./.htpasswd
+        target: /data/.htpasswd
+      - type: volume
+        source: pypi-server
+        target: /data/packages
+    command: -P /data/.htpasswd -a update,download,list /data/packages
+    restart: always
+
+volumes:
+  pypi-server:
